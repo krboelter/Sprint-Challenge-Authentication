@@ -3,10 +3,11 @@
   before granting access to the next middleware/route handler
 */
 
-module.exports = () => {
-  return async (req, res, next) => {
-    if (!req.session || !req.session.user) {
+module.exports =
+  (req, res, next) => {
+    if (req.session || req.session.user) {
+      next()
+    } else {
       return res.status(401).json({ you: 'shall not pass!' });
     }
   }
-};

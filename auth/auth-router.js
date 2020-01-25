@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const authModel = require("./auth-model")
+const bcrypt = require("bcryptjs")
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -14,14 +15,16 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
+    // console.log(req.session)
     const { username, password } = req.body
-    const user = await usersModel.findBy({ username }).first()
+    const user = await authModel.findBy({ username }).first()
     const passwordValid = await bcrypt.compare(password, user.password)
 
     if (user && passwordValid) {
-      req.session.user = user
+      req.session.username = username
+      req.session.user = true
       res.status(200).json({
         message: `Welcome ${user.username}`
       })

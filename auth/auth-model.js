@@ -1,9 +1,11 @@
 const db = require("../database/dbConfig")
+const bcrypt = require("bcryptjs")
 
-function add(user) {
-    const newUser = db("users").insert(user)
+async function add(user) {
+    user.password = await bcrypt.hash(user.password, 14)
+    const [newUser] = await db("users").insert(user)
 
-    return findById(newUser[0])
+    return findById(newUser)
 }
 
 function findBy(filter) {
@@ -13,7 +15,7 @@ function findBy(filter) {
 }
 
 function findById(id) {
-    return db("user")
+    return db("users")
         .where({ id })
         .first()
 }

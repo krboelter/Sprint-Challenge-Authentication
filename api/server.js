@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const dbConfig = require('../database/dbConfig')
 const session = require('express-session')
+const KnexSessionStore = require('connect-session-knex')(session)
 
 
 const authenticate = require('../auth/authenticate-middleware.js');
@@ -22,10 +24,21 @@ server.use(session({
     cookie: {
         secure: false,
         maxAge: 1000 * 60 * 60,
-    }
+    },
+    store: new KnexSessionStore({
+        knex: dbConfig,
+        createtable:true,
+    })
 }))
 
 server.use('/api/auth', authRouter);
 server.use('/api/jokes', authenticate, jokesRouter);
+
+// server.get((error, req, res, next) => {
+//     res.status(500).json({
+//         message: "Internal error...",
+//         error
+//     })
+// })
 
 module.exports = server;
