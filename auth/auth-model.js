@@ -3,13 +3,13 @@ const bcrypt = require("bcryptjs")
 
 async function add(user) {
     user.password = await bcrypt.hash(user.password, 14)
-    const [newUser] = await db("users").insert(user)
+    const [id] = await db("users").insert(user)
 
-    return findById(newUser)
+    return findById(id)
 }
 
 function findBy(filter) {
-    return users = db("users")
+    return user = db("users")
         .where(filter)
         .select("id", "username", "password")
 }
