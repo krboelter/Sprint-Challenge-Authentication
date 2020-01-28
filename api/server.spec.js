@@ -44,8 +44,10 @@ test("log in user", async () => {
 })
 
 test("cannot login without a valid password", async () => {
-    const createUser = await supertest(server).post("api/auth/register").send({ username: "Jordan", password: "asdf" })
-    const res = await supertest(server).post("api/auth/login").send({ username: "Jordan", password: "qwerty" })
+    const createUser = await supertest(server).post("/api/auth/register").send({ username: "Jordan", password: "asdfgh" })
+    const res = await supertest(server).post("/api/auth/login").send({ username: "Jordan", password: "qwerty" })
 
     expect(res.status).toBe(401)
+    expect(res.type).toBe("application/json")
+    expect(res.body).toEqual({ message: "Username or Password is incorrect..." })
 })
